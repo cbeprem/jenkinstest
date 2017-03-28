@@ -1,0 +1,150 @@
+Alias /manual/  /var/www/manual/
+
+
+Creating Authentication 
+
+htpasswd -c filename username
+
+
+<Directory  /var/www/html/prem>
+AuthType     Basic
+AuthName     "Basic Auth"
+AuthUserFile /etc/httpd/conf/basic
+Require valid-user
+</Directory>
+
+
+Creating virtual host
+
+
+
+
+
+Enabling User home directories
+
+Public_html       		// for configuring home directories to public
+
+Enable or # 
+
+<IfModule mod_userdir.c>     
+
+
+#UserDir disable               // enbling user directory 
+
+
+
+
+#<Directory /home/*/public_html>
+#    AllowOverride FileInfo AuthConfig Limit
+#    Options MultiViews Indexes SymLinksIfOwnerMatch IncludesNoExec
+#    <Limit GET POST OPTIONS>
+#        Order allow,deny
+#        Allow from all
+#    </Limit>
+#    <LimitExcept GET POST OPTIONS>
+#        Order deny,allow
+#        Deny from all
+#    </LimitExcept>
+#</Directory>
+
+virtaul Hosts config  for Load balancers
+
+#vhost config for rlc.cvs.com
+<VirtualHost 207.21.210.56:443 207.21.210.54:443>
+    SuexecUserGroup root root
+    ServerName    rlc.cvs.com
+    ServerAlias    www.rlc.cvs.com
+    ServerAdmin    root@addventures.com
+    DocumentRoot   /var/www/html/rlc.cvscaremark.com/trunk
+    ScriptAlias    /cgi-bin/ "/var/www/cgi-bin/"
+    <Directory /var/www/cgi-bin>
+        AllowOverride All
+        Options ExecCGI
+        Order allow,deny
+        Allow from all
+    </Directory>
+    <IfModule mod_rewrite.c>
+        RewriteEngine On
+        RewriteOptions inherit
+    </IfModule>
+ CustomLog      /usr/local/apache/logs/rlc.cvs.com-access_log combined
+    ErrorLog       /usr/local/apache/logs/rlc.cvs.com-error_log
+</VirtualHost>
+
+SSL file ssl.conf
+
+##Vhost For rlc.cvs.com
+<VirtualHost 207.21.210.56:443 207.21.210.54:443>
+    SuexecUserGroup root root
+    ServerName    rlc.cvs.com
+    ServerAlias    www.rlc.cvs.com
+    ServerAdmin    root@addventures.com
+    SSLEngine on
+UseCanonicalName OFF
+#SSLCertificateFile    /etc/pki/tls/certs/rlc.cvs.com/rlc.cvs.com.crt
+SSLCertificateFile  /etc/pki/tls/certs/rlc.cvs.com.2014/rlc.cvs.com.crt
+SSLCertificateKeyFile   /etc/pki/tls/certs/rlc.cvs.com/rlc_cvs_com.key
+#SSLCertificateChainFile /etc/pki/tls/certs/cvscaremark/cvscaremark.ca-bundle
+ DocumentRoot      "/var/www/html/rlc.cvscaremark.com/trunk"
+    ScriptAlias    /cgi-bin/ "/var/www/cgi-bin/"
+    CustomLog      /usr/local/apache/logs/rlc.cvs.com-access_log combined
+    ErrorLog       /usr/local/apache/logs/rlc.cvs.com-error_log
+</VirtualHost>
+
+
+
+Apache Logs 
+
+Categories 
+
+200- good
+300 - redirects
+400 - client-invoked errors
+500 - server-invoked errors
+
+
+Log Format 
+
+%h - host (IP)
+%l - IDENT (deprecated)
+%u - user
+%t - timestamp
+%r - request method ( Get/POST)	
+%s - status	(2xx, 3xx ,4xx)
+
+
+Not Displaying Apache version and Os version
+
+ServerSignature Off      /HIdes apache version
+ServerToken   OS/Prod 
+
+<VirtualHost 184.106.219.43:80>
+        <Directory /var/www/html/Driverguide/trunk>
+        AllowOverride All
+        </Directory>
+        DocumentRoot /var/www/html/Driverguide/trunk
+        ServerName 184.106.219.43
+  </VirtualHost>
+
+
+SSL 
+openssl genrsa -des3 -out www.netbenefitsplus.us.key 2048                    //with passphrase 
+
+openssl genrsa  -out www.cugh.org.key 2048                         //without passphrase 
+openssl req -new -key  www.cugh.org.key   -out www.cugh.org.csr  //to genaerate csr 
+openssl req -in  www.cugh.org.csr -noout -text
+
+
+openssl x509 -req -days 365 -in server.csr -signkey server.key -out server.crt
+
+
+openssl rsa -in homestagerbusinessbuilder.com.key1  -out  1homestagerbusinessbuilder.com.key
+openssl req -in homestagerbusinessbuilder.com.csr -noout -text
+
+Redirect / https://homestagerbusinessbuilder.com/
+
+RewriteCond %{HTTP_HOST} ^leveragepoint\.com$ [NC]
+RewriteRule ^(.*)$ http://www.leveragepoint.com/$1 [L,R=301]
+
+ RewriteCond %{HTTP_HOST} ^blog\.leveragepoint\.com$ [NC]
+ RewriteRule ^(.*)$ http://www.leveragepoint.com/blog/$1 [L,R=301]
